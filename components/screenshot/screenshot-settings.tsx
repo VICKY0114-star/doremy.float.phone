@@ -23,7 +23,6 @@ import { isShellEnvironment as isShell, openAccessibilitySettings } from "@/lib/
 import {
   captureAndStoreScreenshot,
   clearAllScreenshots,
-  deleteScreenshotRecord,
   flushPendingUserShot,
   hasScreenshotBallBridge,
   hasScreenshotBridge,
