@@ -50,7 +50,29 @@ export default function RootLayout({
         <ChatPluginBootstrap />
         <ChatReasoningVisibilityController />
         {children}
-      </body>
+     <button
+  onClick={() => {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    } else if ((document.documentElement as any).webkitRequestFullscreen) {
+      (document.documentElement as any).webkitRequestFullscreen();
+    }
+  }}
+  style={{
+    position: "fixed",
+    bottom: "100px",
+    right: "16px",
+    zIndex: 99999,
+    padding: "8px 12px",
+    borderRadius: "8px",
+    border: "none",
+    background: "#222",
+    color: "#fff",
+  }}
+>
+全屏
+</button>
+ </body>
     </html>
   );
 }
