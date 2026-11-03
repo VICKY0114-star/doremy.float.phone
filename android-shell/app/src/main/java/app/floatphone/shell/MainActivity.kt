@@ -303,7 +303,7 @@ class MainActivity : AppCompatActivity() {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
     super.onPageFinished(view, url)
-    view?.evaluateJavascript("var style = document.createElement('style'); style.innerHTML = '#netlify-badge, a[href*=\"netlify.com\"] { display: none !important; }'; document.head.appendChild(style);", null)
+    view?.evaluateJavascript("var interval = setInterval(function() { var el = document.querySelector('#netlify-badge-container') || document.querySelector('a[href*=\"netlify.com\"]'); if (el) { el.style.display = 'none'; el.style.visibility = 'hidden'; el.style.opacity = '0'; } }, 100);", null)
             }
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                 val url = request.url
@@ -376,10 +376,20 @@ class MainActivity : AppCompatActivity() {
         })
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (webView.canGoBack()) webView.goBack() else moveTaskToBack(true)
+    override fun handleOnBackPressed() {
+        // 检查网页的历史记录里是否有上一页
+        webView.evaluateJavascript("window.history.length > 1") { result ->
+            if (result == "true") {
+                // 如果有，网页内部后退一层（解决侧滑退出问题）
+                webView.evaluateJavascript("window.history.back()", null)
+            } else {
+                // 如果已经是第一页了，才允许真正退出
+                isEnabled = false
+                onBackPressedDispatcher.onBackPressed()
             }
-        })
+        }
+    }
+})
 
         // 冷启动带深链（如来电接听）直接加载目标；否则加载首页
         webView.loadUrl(consumeOpenUrl(intent) ?: SITE_URL)
