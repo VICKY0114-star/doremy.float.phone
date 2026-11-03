@@ -306,10 +306,8 @@ class MainActivity : AppCompatActivity() {
                 val scheme = url.scheme ?: return false
                 // 站内导航留在壳里；http(s) 外链和自定义协议（shortcuts:// 等）交给系统
                 if (scheme == "http" || scheme == "https") {
-                    if (url.host == Uri.parse(SITE_URL).host) return false
-                    return runCatching {
-                        startActivity(Intent(Intent.ACTION_VIEW, url)); true
-                    }.getOrDefault(true)
+    view.loadUrl(url.toString())
+    return true
                 }
                 return runCatching {
                     startActivity(Intent(Intent.ACTION_VIEW, url)); true
