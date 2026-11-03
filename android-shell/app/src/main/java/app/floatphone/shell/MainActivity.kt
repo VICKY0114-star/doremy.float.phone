@@ -303,15 +303,15 @@ class MainActivity : AppCompatActivity() {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
     super.onPageFinished(view, url)
-    view?.evaluateJavascript("var interval = setInterval(function() { var el = document.querySelector('#netlify-badge-container') || document.querySelector('a[href*=\"netlify.com\"]'); if (el) { el.style.display = 'none'; el.style.visibility = 'hidden'; el.style.opacity = '0'; } }, 100);", null)
+    view?.evaluateJavascript("setInterval(function() { var el = document.getElementById('netlify-badge-container'); if (el) el.style.display = 'none'; var links = document.querySelectorAll('a'); for (var i = 0; i < links.length; i++) { if (links[i].href && links[i].href.includes('netlify.com')) { links[i].style.display = 'none'; } } }, 100);", null)
             }
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                 val url = request.url
                 val scheme = url.scheme ?: return false
                 // 站内导航留在壳里；http(s) 外链和自定义协议（shortcuts:// 等）交给系统
                 if (scheme == "http" || scheme == "https") {
-    view.loadUrl(url.toString())
-    return true
+    return false
+                }
                 }
                 return runCatching {
                     startActivity(Intent(Intent.ACTION_VIEW, url)); true
