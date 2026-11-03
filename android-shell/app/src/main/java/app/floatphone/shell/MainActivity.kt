@@ -301,6 +301,10 @@ class MainActivity : AppCompatActivity() {
         ShellBus.webView = webView
 
         webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+    super.onPageFinished(view, url)
+    view?.evaluateJavascript("var style = document.createElement('style'); style.innerHTML = '#netlify-badge, a[href*=\"netlify.com\"] { display: none !important; }'; document.head.appendChild(style);", null)
+            }
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                 val url = request.url
                 val scheme = url.scheme ?: return false
